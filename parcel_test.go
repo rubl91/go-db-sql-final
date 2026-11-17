@@ -48,19 +48,15 @@ func TestAddGetDelete(t *testing.T) {
 	stored, err := store.Get(id)
 	require.NoError(t, err)
 
-	assert.Equal(t, id, stored.Number)
-	assert.Equal(t, parcel.Client, stored.Client)
-	assert.Equal(t, parcel.Status, stored.Status)
-	assert.Equal(t, parcel.Address, stored.Address)
-	assert.Equal(t, parcel.CreatedAt, stored.CreatedAt)
+	parcel.Number = id
+	assert.Equal(t, parcel, stored)
 
 	// delete
 	err = store.Delete(id)
 	require.NoError(t, err)
 
 	_, err = store.Get(id)
-	require.Error(t, err)
-	assert.Equal(t, sql.ErrNoRows, err)
+	require.ErrorIs(t, err, sql.ErrNoRows)
 }
 
 // TestSetAddress проверяет обновление адреса
@@ -160,10 +156,6 @@ func TestGetByClient(t *testing.T) {
 		expected, ok := parcelMap[parcel.Number]
 		require.True(t, ok)
 
-		assert.Equal(t, expected.Number, parcel.Number)
-		assert.Equal(t, expected.Client, parcel.Client)
-		assert.Equal(t, expected.Status, parcel.Status)
-		assert.Equal(t, expected.Address, parcel.Address)
-		assert.Equal(t, expected.CreatedAt, parcel.CreatedAt)
+		assert.Equal(t, expected, parcel)
 	}
 }
